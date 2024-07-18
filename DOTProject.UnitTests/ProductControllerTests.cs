@@ -10,66 +10,153 @@ namespace DOTProject.UnitTests
 {
     public class ProductControllerTests
     {
-        private readonly Mock<IProductService> _mockProductService;
-        private readonly Mock<ICategoryService> _mockCategoryService;
-        private readonly Mock<IValidator<ProductModel>> _mockValidator;
-        private readonly ProductController _controller;
+        private readonly Mock<IProductService> _productServiceMock;
+        private readonly Mock<ICategoryService> _categoryServiceMock;
+        private readonly Mock<IValidator<ProductModel>> _validatorMock;
+        private readonly ProductController _productController;
 
         public ProductControllerTests()
         {
-            _mockProductService = new Mock<IProductService>();
-            _mockValidator = new Mock<IValidator<ProductModel>>();
-            _mockCategoryService = new Mock<ICategoryService>();
-            _controller = new ProductController(_mockProductService.Object, _mockValidator.Object, _mockCategoryService.Object);
+            _productServiceMock = new Mock<IProductService>();
+            _categoryServiceMock = new Mock<ICategoryService>();
+            _validatorMock = new Mock<IValidator<ProductModel>>();
+            _productController = new ProductController(_productServiceMock.Object, _validatorMock.Object, _categoryServiceMock.Object);
         }
 
         [Fact]
-        public async Task GetAll_ShouldReturnAllProducts()
+        public async Task GetAll_ReturnsOkResult_WithProducts()
         {
-            var products = new List<ProductModel>
-            {
-                new ProductModel { Id = 1, Name = "Laptop", Price = 1200.00m, CategoryId = 1 },
-                new ProductModel { Id = 2, Name = "Headphones", Price = 100.00m, CategoryId = 1 }
-            };
+            // Arrange
+            var products = new List<ProductModel> { new ProductModel { Id = 1, Name = "Product1" } };
+            _productServiceMock.Setup(service => service.GetAllAsync()).ReturnsAsync(products);
 
-            _mockProductService.Setup(s => s.GetAllAsync()).ReturnsAsync(products);
+            // Act
+            var result = await _productController.GetAll();
 
-            var result = await _controller.GetAll() as OkObjectResult;
-            var returnedProducts = result.Value as IEnumerable<ProductModel>;
-
-            Assert.Equal(2, returnedProducts.Count());
-            Assert.Equal("Laptop", returnedProducts.First().Name);
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsAssignableFrom<IEnumerable<ProductModel>>(okResult.Value);
+            Assert.Single(returnValue);
         }
 
         [Fact]
-        public async Task Create_ShouldReturnBadRequestWhenValidationFails()
+        public async Task GetById_ReturnsNotFound_WhenProductDoesNotExist()
         {
-            var product = new ProductModel { Id = 1, Name = "", Price = 1200.00m, CategoryId = 1 };
-            var validationResult = new ValidationResult(new List<ValidationFailure>
-            {
-                new ValidationFailure("Name", "Product name is required.")
-            });
+            // Arrange
+            _productServiceMock.Setup(service => service.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((ProductModel)null);
 
-            _mockValidator.Setup(v => v.ValidateAsync(product, default)).ReturnsAsync(validationResult);
+            // Act
+            var result = await _productController.GetById(1);
 
-            var result = await _controller.Create(product);
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
 
+        [Fact]
+        public async Task Create_ReturnsBadRequest_WhenModelIsInvalid()
+        {
+            // Arrange
+            var product = new ProductModel();
+            var validationResult = new ValidationResult(new List<ValidationFailure> { new ValidationFailure("Name", "Name is required") });
+            _validatorMock.Setup(validator => validator.ValidateAsync(product, default)).ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _productController.Create(product);
+
+            // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
-        public async Task Create_ShouldReturnCreatedAtActionWhenSuccessful()
+        public async Task Create_ReturnsNotFound_WhenCategoryDoesNotExist()
         {
-            var product = new ProductModel { Id = 1, Name = "Laptop", Price = 1200.00m, CategoryId = 1 };
+            // Arrange
+            var product = new ProductModel { CategoryId = 1 };
             var validationResult = new ValidationResult();
+            _validatorMock.Setup(validator => validator.ValidateAsync(product, default)).ReturnsAsync(validationResult);
+            _categoryServiceMock.Setup(service => service.IsExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
 
-            _mockValidator.Setup(v => v.ValidateAsync(product, default)).ReturnsAsync(validationResult);
-            _mockProductService.Setup(s => s.AddAsync(product)).Returns(Task.CompletedTask);
+            // Act
+            var result = await _productController.Create(product);
 
-            var result = await _controller.Create(product) as CreatedAtActionResult;
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
 
-            Assert.Equal("GetById", result.ActionName);
-            Assert.Equal(1, ((ProductModel)result.Value).Id);
+        [Fact]
+        public async Task Update_ReturnsBadRequest_WhenProductIDMismatch()
+        {
+            // Arrange
+            var product = new ProductModel { Id = 1, Name = "Product1" };
+
+            // Act
+            var result = await _productController.Update(2, product);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Update_ReturnsNotFound_WhenProductDoesNotExist()
+        {
+            // Arrange
+            var product = new ProductModel { Id = 1, CategoryId = 1, Name = "Product1" };
+            var validationResult = new ValidationResult();
+            _validatorMock.Setup(validator => validator.ValidateAsync(product, default)).ReturnsAsync(validationResult);
+            _productServiceMock.Setup(service => service.IsExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await _productController.Update(1, product);
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Update_ReturnsNotFound_WhenCategoryDoesNotExist()
+        {
+            // Arrange
+            var product = new ProductModel { Id = 1, CategoryId = 1, Name = "Product1" };
+            var validationResult = new ValidationResult();
+            _validatorMock.Setup(validator => validator.ValidateAsync(product, default)).ReturnsAsync(validationResult);
+            _productServiceMock.Setup(service => service.IsExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
+            _categoryServiceMock.Setup(service => service.IsExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await _productController.Update(1, product);
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Delete_ReturnsNotFound_WhenProductDoesNotExist()
+        {
+            // Arrange
+            _productServiceMock.Setup(service => service.IsExistsAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            // Act
+            var result = await _productController.Delete(1);
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Delete_ReturnsOkResult_WhenProductExists()
+        {
+            // Arrange
+            var product = new ProductModel { Id = 1, Name = "Product1" };
+            _productServiceMock.Setup(service => service.IsExistsAsync(It.IsAny<int>())).ReturnsAsync(true);
+            _productServiceMock.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(product);
+
+            // Act
+            var result = await _productController.Delete(1);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsType<ProductModel>(okResult.Value);
+            Assert.Equal(product.Id, returnValue.Id);
         }
     }
 }

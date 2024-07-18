@@ -20,27 +20,7 @@ namespace DOTProject.Application.Categories
 
         public async Task<IEnumerable<CategoryModel>> GetAllAsync()
         {
-            List<CategoryModel> categories = new List<CategoryModel>();
-            if (_cache.TryGetValue(CategoryCacheKey, out categories))
-            {
-                return categories;
-            }
-            categories = await _context.Categories.Include(p => p.Products)
-                    .Select(s => new CategoryModel
-                    {
-                        Id = s.Id,
-                        Name = s.Name,
-                        Products = s.Products.Select(p => new ProductModel
-                        {
-                            Id = p.Id,
-                            Name = p.Name,
-                            Price = p.Price,
-                            CategoryId = p.CategoryId,
-                        }).ToList()
-                    })
-                    .ToListAsync();
-
-            _cache.Set(CategoryCacheKey, categories, TimeSpan.FromMinutes(5));
+            var categories = await GetDataAsync();
             return categories;
         }
 
@@ -70,7 +50,7 @@ namespace DOTProject.Application.Categories
             return isExists;
         }
 
-        public async Task AddAsync(CategoryModel model)
+        public async Task<CategoryModel?> AddAsync(CategoryModel model)
         {
             Category category = new Category
             {
@@ -78,22 +58,40 @@ namespace DOTProject.Application.Categories
             };
             await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
+
+            await GetDataAsync(true);
+
+            model.Id = category.Id;
+            return model;
         }
 
-        public async Task UpdateAsync(CategoryModel model)
+        public async Task<CategoryModel?> UpdateAsync(CategoryModel model)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(p => p.Id == model.Id);
 
+            category.Name = model.Name;
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
+
+            await GetDataAsync(true);
+
+            return model;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<CategoryModel?> DeleteAsync(int id)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(p => p.Id == id);
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
+
+            await GetDataAsync(true);
+
+            return new CategoryModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+            };
         }
 
         private async Task<IEnumerable<CategoryModel>> GetDataAsync(bool isRefresh = false)
@@ -120,6 +118,11 @@ namespace DOTProject.Application.Categories
 
             _cache.Set(CategoryCacheKey, categories, TimeSpan.FromMinutes(5));
             return categories;
+        }
+
+        public async Task RefreshDataAsync()
+        {
+            await GetDataAsync(true);
         }
     }
 }

@@ -31,7 +31,7 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AppContextDB")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppContextDB")), ServiceLifetime.Transient);
 
 
 builder.Services.AddScoped<IProductService, ProductService>();

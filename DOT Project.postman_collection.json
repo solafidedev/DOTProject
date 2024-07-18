@@ -1,0 +1,184 @@
+{
+	"info": {
+		"_postman_id": "ff2c40f4-475c-488c-a382-2fe64a92e168",
+		"name": "DOT Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "3919769"
+	},
+	"item": [
+		{
+			"name": "Authenticate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"Admin#1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5258/api/Authenticate/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Category",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwianRpIjoiZTE0NTJkMGEtMWEyMS00N2FmLWI0MGMtYzQ1MDI3ZDljMWE5IiwiZXhwIjoxNzIxNDA3MDU2LCJpc3MiOiIqIiwiYXVkIjoiKiJ9.bh3CA4184MPJMabrYj_sbZ8mCUQ46GuL8fUgIdkvo6s"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:5258/api/Category"
+			},
+			"response": []
+		},
+		{
+			"name": "Category",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwianRpIjoiZTE0NTJkMGEtMWEyMS00N2FmLWI0MGMtYzQ1MDI3ZDljMWE5IiwiZXhwIjoxNzIxNDA3MDU2LCJpc3MiOiIqIiwiYXVkIjoiKiJ9.bh3CA4184MPJMabrYj_sbZ8mCUQ46GuL8fUgIdkvo6s"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Drinks \"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5258/api/Category"
+			},
+			"response": []
+		},
+		{
+			"name": "Category",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwianRpIjoiZTE0NTJkMGEtMWEyMS00N2FmLWI0MGMtYzQ1MDI3ZDljMWE5IiwiZXhwIjoxNzIxNDA3MDU2LCJpc3MiOiIqIiwiYXVkIjoiKiJ9.bh3CA4184MPJMabrYj_sbZ8mCUQ46GuL8fUgIdkvo6s"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 7,\r\n    \"name\": \"Drinks 2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5258/api/Category/7"
+			},
+			"response": []
+		},
+		{
+			"name": "Category",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwianRpIjoiZTE0NTJkMGEtMWEyMS00N2FmLWI0MGMtYzQ1MDI3ZDljMWE5IiwiZXhwIjoxNzIxNDA3MDU2LCJpc3MiOiIqIiwiYXVkIjoiKiJ9.bh3CA4184MPJMabrYj_sbZ8mCUQ46GuL8fUgIdkvo6s"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:5258/api/Category/7"
+			},
+			"response": []
+		},
+		{
+			"name": "Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwianRpIjoiZTE0NTJkMGEtMWEyMS00N2FmLWI0MGMtYzQ1MDI3ZDljMWE5IiwiZXhwIjoxNzIxNDA3MDU2LCJpc3MiOiIqIiwiYXVkIjoiKiJ9.bh3CA4184MPJMabrYj_sbZ8mCUQ46GuL8fUgIdkvo6s"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:5258/api/Product"
+			},
+			"response": []
+		},
+		{
+			"name": "Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwianRpIjoiZTE0NTJkMGEtMWEyMS00N2FmLWI0MGMtYzQ1MDI3ZDljMWE5IiwiZXhwIjoxNzIxNDA3MDU2LCJpc3MiOiIqIiwiYXVkIjoiKiJ9.bh3CA4184MPJMabrYj_sbZ8mCUQ46GuL8fUgIdkvo6s"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Necklace Men\",\r\n    \"price\": 300000.00,\r\n    \"categoryId\": 6\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5258/api/Product"
+			},
+			"response": []
+		},
+		{
+			"name": "Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwianRpIjoiZTE0NTJkMGEtMWEyMS00N2FmLWI0MGMtYzQ1MDI3ZDljMWE5IiwiZXhwIjoxNzIxNDA3MDU2LCJpc3MiOiIqIiwiYXVkIjoiKiJ9.bh3CA4184MPJMabrYj_sbZ8mCUQ46GuL8fUgIdkvo6s"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"id\": 13,\r\n        \"name\": \"Necklace Women\",\r\n        \"price\": 500000.00,\r\n        \"categoryId\": 6,\r\n        \"category\": {\r\n            \"id\": 6,\r\n            \"name\": \"Accessories\",\r\n            \"products\": null\r\n        }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5258/api/Product/13"
+			},
+			"response": []
+		},
+		{
+			"name": "Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwianRpIjoiZTE0NTJkMGEtMWEyMS00N2FmLWI0MGMtYzQ1MDI3ZDljMWE5IiwiZXhwIjoxNzIxNDA3MDU2LCJpc3MiOiIqIiwiYXVkIjoiKiJ9.bh3CA4184MPJMabrYj_sbZ8mCUQ46GuL8fUgIdkvo6s"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:5258/api/Product/31"
+			},
+			"response": []
+		}
+	]
+}

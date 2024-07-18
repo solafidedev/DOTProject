@@ -8,10 +8,11 @@ namespace DOTProject.Application.Products
     public class ProductService : IProductService
     {
         private readonly ApplicationDbContext _context;
-
-        public ProductService(ApplicationDbContext context)
+        private readonly ICategoryService _categoryService;
+        public ProductService(ApplicationDbContext context, ICategoryService categoryService)
         {
             _context = context;
+            _categoryService = categoryService;
         }
 
         public async Task<IEnumerable<ProductModel>> GetAllAsync()
@@ -55,7 +56,7 @@ namespace DOTProject.Application.Products
             return isExists;
         }
 
-        public async Task AddAsync(ProductModel model)
+        public async Task<ProductModel?> AddAsync(ProductModel model)
         {
             var product = new Product
             {
@@ -65,9 +66,14 @@ namespace DOTProject.Application.Products
             };
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
+
+            await _categoryService.RefreshDataAsync();
+
+            model.Id = product.Id;
+            return model;
         }
 
-        public async Task UpdateAsync(ProductModel model)
+        public async Task<ProductModel?> UpdateAsync(ProductModel model)
         {
             var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == model.Id);
 
@@ -77,14 +83,28 @@ namespace DOTProject.Application.Products
 
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
+
+            await _categoryService.RefreshDataAsync();
+
+            return model;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<ProductModel?> DeleteAsync(int id)
         {
             var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
+
+            await _categoryService.RefreshDataAsync();
+
+            return new ProductModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                CategoryId = product.CategoryId,
+            };
         }
     }
 }

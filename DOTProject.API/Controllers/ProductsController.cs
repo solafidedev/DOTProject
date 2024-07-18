@@ -1,11 +1,14 @@
+using System.Net;
 using DOTProject.Application.Categories;
 using DOTProject.Application.Products;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DOTProject.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
@@ -49,10 +52,10 @@ namespace DOTProject.API.Controllers
             }
 
             bool IsCategoryExists = await _categoryService.IsExistsAsync(product.CategoryId ?? 0);
-            if(IsCategoryExists) NotFound($"Category {product.CategoryId ?? 0} not found");
+            if(!IsCategoryExists) return NotFound($"Category {product.CategoryId ?? 0} not found");
 
-            await _productService.AddAsync(product);
-            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+            product = await _productService.AddAsync(product);
+            return StatusCode((int)HttpStatusCode.Created, product);
         }
 
         [HttpPut("{id}")]
@@ -69,24 +72,24 @@ namespace DOTProject.API.Controllers
                 return BadRequest(result.Errors);
             }
 
-            bool isCategoryExists = await _categoryService.IsExistsAsync(product.CategoryId ?? 0);
-            if(isCategoryExists) NotFound($"Category {product.CategoryId ?? 0} not found");
+            bool isProductExists = await _productService.IsExistsAsync(product.Id ?? 0);
+            if(!isProductExists) return NotFound($"Product {product.Id ?? 0} not found");
 
-            await _productService.UpdateAsync(product);
-            return NoContent();
+            bool isCategoryExists = await _categoryService.IsExistsAsync(product.CategoryId ?? 0);
+            if(!isCategoryExists) return NotFound($"Category {product.CategoryId ?? 0} not found");
+
+            product = await _productService.UpdateAsync(product);
+            return StatusCode((int)HttpStatusCode.OK, product);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var product = await _productService.GetByIdAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            bool isProductExists = await _productService.IsExistsAsync(id);
+            if(!isProductExists) return NotFound($"Product {id} not found");
 
-            await _productService.DeleteAsync(id);
-            return NoContent();
+            var product = await _productService.DeleteAsync(id);
+            return StatusCode((int)HttpStatusCode.OK, product);
         }
     }
 }

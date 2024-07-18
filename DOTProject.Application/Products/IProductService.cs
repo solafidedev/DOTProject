@@ -4,9 +4,9 @@ namespace DOTProject.Application.Products
     {
         Task<IEnumerable<ProductModel>> GetAllAsync();
         Task<ProductModel?> GetByIdAsync(int id);
-        Task AddAsync(ProductModel model);
-        Task UpdateAsync(ProductModel model);
-        Task DeleteAsync(int id);
+        Task<ProductModel?> AddAsync(ProductModel model);
+        Task<ProductModel?> UpdateAsync(ProductModel model);
+        Task<ProductModel?> DeleteAsync(int id);
         Task<bool> IsExistsAsync(int id);
     }
 }

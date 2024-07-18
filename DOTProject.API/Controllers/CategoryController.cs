@@ -1,10 +1,13 @@
+using System.Net;
 using DOTProject.Application.Categories;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DOTProject.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
@@ -49,8 +52,8 @@ namespace DOTProject.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _categoryService.AddAsync(category);
-            return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
+            category = await _categoryService.AddAsync(category);
+            return StatusCode((int)HttpStatusCode.Created, category);
         }
 
         [HttpPut("{id}")]
@@ -75,8 +78,8 @@ namespace DOTProject.API.Controllers
             var isExists = await _categoryService.IsExistsAsync(id);
             if (!isExists) return NotFound($"Category {id} not found");
 
-            await _categoryService.UpdateAsync(category);
-            return NoContent();
+            category = await _categoryService.UpdateAsync(category);
+            return StatusCode((int)HttpStatusCode.OK, category);
         }
 
         [HttpDelete("{id}")]
@@ -85,8 +88,8 @@ namespace DOTProject.API.Controllers
             var isExists = await _categoryService.IsExistsAsync(id);
             if (!isExists) return NotFound($"Category {id} not found");
 
-            await _categoryService.DeleteAsync(id);
-            return NoContent();
+            var category = await _categoryService.DeleteAsync(id);
+            return StatusCode((int)HttpStatusCode.OK, category);
         }
     }
 }
