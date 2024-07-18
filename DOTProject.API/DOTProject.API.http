@@ -1,0 +1,6 @@
+@DOTProject.API_HostAddress = http://localhost:5258
+
+GET {{DOTProject.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,17 @@
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\bin\Debug\net8.0\DOTProject.Infrastructure.deps.json
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\bin\Debug\net8.0\DOTProject.Infrastructure.dll
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\bin\Debug\net8.0\DOTProject.Infrastructure.pdb
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProject.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProject.Infrastructure.AssemblyInfoInputs.cache
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProject.Infrastructure.AssemblyInfo.cs
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProject.Infrastructure.csproj.CoreCompileInputs.cache
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProject.Infrastructure.dll
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\refint\DOTProject.Infrastructure.dll
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProject.Infrastructure.pdb
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\ref\DOTProject.Infrastructure.dll
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\bin\Debug\net8.0\DOTProject.Infrastructure.runtimeconfig.json
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\bin\Debug\net8.0\DOTProject.Domain.dll
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\bin\Debug\net8.0\DOTProject.Domain.pdb
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProject.Infrastructure.csproj.AssemblyReference.cache
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProje.E01F2968.Up2Date
+G:\Projects\DOT Indonesia\DOTProject\DOTProject.Infrastructure\obj\Debug\net8.0\DOTProject.Infrastructure.genruntimeconfig.cache
