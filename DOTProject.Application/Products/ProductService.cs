@@ -30,10 +30,9 @@ namespace DOTProject.Application.Products
             }).ToListAsync();
         }
 
-        public async Task<ProductModel> GetByIdAsync(int id)
+        public async Task<ProductModel?> GetByIdAsync(int id)
         {
             var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
-            if (product is null) throw new KeyNotFoundException("Product not found");
 
             var result = new ProductModel
             {
@@ -48,6 +47,12 @@ namespace DOTProject.Application.Products
                 }
             };
             return result;
+        }
+
+        public async Task<bool> IsExistsAsync(int id)
+        {
+            var isExists = await _context.Products.AnyAsync(p => p.Id == id);
+            return isExists;
         }
 
         public async Task AddAsync(ProductModel model)
@@ -65,7 +70,6 @@ namespace DOTProject.Application.Products
         public async Task UpdateAsync(ProductModel model)
         {
             var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == model.Id);
-            if (product is null) throw new KeyNotFoundException("Product not found");
 
             product.Name = model.Name;
             product.Price = model.Price ?? 0;
@@ -78,7 +82,6 @@ namespace DOTProject.Application.Products
         public async Task DeleteAsync(int id)
         {
             var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
-            if (product is null) throw new KeyNotFoundException("Product not found");
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();

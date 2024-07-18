@@ -1,0 +1,10 @@
+DOTProject.API/bin/*
+DOTProject.API/obj/*
+DOTProject.Application/bin/*
+DOTProject.Application/obj/*
+DOTProject.Domain/bin/*
+DOTProject.Domain/obj/*
+DOTProject.Infrastructure/bin/*
+DOTProject.Infrastructure/obj/*
+DOTProject.UnitTests/bin/*
+DOTProject.UnitTests/obj/*

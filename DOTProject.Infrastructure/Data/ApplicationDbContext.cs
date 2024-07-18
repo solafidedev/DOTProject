@@ -42,6 +42,18 @@ namespace DOTProject.Infrastructure.Data
                       .IsRequired()
                       .HasMaxLength(100);
             });
+
+            // Seed data
+            modelBuilder.Entity<Category>().HasData(
+                new Category { Id = 1, Name = "Electronics" },
+                new Category { Id = 2, Name = "Books" }
+            );
+
+            modelBuilder.Entity<Product>().HasData(
+                new Product { Id = 1, Name = "Laptop", Price = 15000000, CategoryId = 1 },
+                new Product { Id = 2, Name = "Headphones", Price = 5000000, CategoryId = 1 },
+                new Product { Id = 3, Name = "Science Fiction Book", Price = 350000, CategoryId = 2 }
+            );
         }
     }
 }

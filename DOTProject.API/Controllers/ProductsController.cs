@@ -1,3 +1,4 @@
+using DOTProject.Application.Categories;
 using DOTProject.Application.Products;
 using FluentValidation;
 using FluentValidation.Results;
@@ -10,12 +11,14 @@ namespace DOTProject.API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
         private readonly IValidator<ProductModel> _validator;
 
-        public ProductController(IProductService productService, IValidator<ProductModel> validator)
+        public ProductController(IProductService productService, IValidator<ProductModel> validator, ICategoryService categoryService)
         {
             _productService = productService;
             _validator = validator;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
@@ -31,7 +34,7 @@ namespace DOTProject.API.Controllers
             var product = await _productService.GetByIdAsync(id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound($"Product {id} not found");
             }
             return Ok(product);
         }
@@ -44,6 +47,9 @@ namespace DOTProject.API.Controllers
             {
                 return BadRequest(result.Errors);
             }
+
+            bool IsCategoryExists = await _categoryService.IsExistsAsync(product.CategoryId ?? 0);
+            if(IsCategoryExists) NotFound($"Category {product.CategoryId ?? 0} not found");
 
             await _productService.AddAsync(product);
             return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
@@ -62,6 +68,9 @@ namespace DOTProject.API.Controllers
             {
                 return BadRequest(result.Errors);
             }
+
+            bool isCategoryExists = await _categoryService.IsExistsAsync(product.CategoryId ?? 0);
+            if(isCategoryExists) NotFound($"Category {product.CategoryId ?? 0} not found");
 
             await _productService.UpdateAsync(product);
             return NoContent();

@@ -8,7 +8,7 @@ namespace DOTProject.Application.Products
         {
             RuleFor(p => p.Name).NotEmpty().WithMessage("Product name is required.");
             RuleFor(p => p.Price).GreaterThan(0).WithMessage("Price must be greater than zero.");
-            RuleFor(p => p.CategoryId).NotNull().WithMessage("Category is null");
+            RuleFor(p => p.CategoryId).NotEmpty().NotNull().WithMessage("Category is required");
         }
     }
 }

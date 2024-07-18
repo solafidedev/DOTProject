@@ -26,11 +26,12 @@ namespace DOTProject.Application.Categories
                 return categories;
             }
             categories = await _context.Categories.Include(p => p.Products)
-                    .Select(s=> new CategoryModel
+                    .Select(s => new CategoryModel
                     {
                         Id = s.Id,
                         Name = s.Name,
-                        Products = s.Products.Select(p => new ProductModel{
+                        Products = s.Products.Select(p => new ProductModel
+                        {
                             Id = p.Id,
                             Name = p.Name,
                             Price = p.Price,
@@ -39,20 +40,21 @@ namespace DOTProject.Application.Categories
                     })
                     .ToListAsync();
 
-                _cache.Set(CategoryCacheKey, categories, TimeSpan.FromMinutes(5));
+            _cache.Set(CategoryCacheKey, categories, TimeSpan.FromMinutes(5));
             return categories;
         }
 
-        public async Task<CategoryModel> GetByIdAsync(int id)
+        public async Task<CategoryModel?> GetByIdAsync(int id)
         {
             var category = await _context.Categories.Include(p => p.Products).FirstOrDefaultAsync(p => p.Id == id);
-            if(category is null) throw new KeyNotFoundException("Category not found");
+            if (category is null) return null;
 
             var result = new CategoryModel
             {
                 Id = category.Id,
                 Name = category.Name,
-                Products = category.Products.Select(p=>new ProductModel{
+                Products = category.Products.Select(p => new ProductModel
+                {
                     Id = p.Id,
                     Name = p.Name,
                     Price = p.Price,
@@ -62,9 +64,16 @@ namespace DOTProject.Application.Categories
             return result;
         }
 
+        public async Task<bool> IsExistsAsync(int id)
+        {
+            var isExists = await _context.Categories.AnyAsync(p => p.Id == id);
+            return isExists;
+        }
+
         public async Task AddAsync(CategoryModel model)
         {
-            Category category = new Category{
+            Category category = new Category
+            {
                 Name = model.Name ?? "",
             };
             await _context.Categories.AddAsync(category);
@@ -74,7 +83,6 @@ namespace DOTProject.Application.Categories
         public async Task UpdateAsync(CategoryModel model)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(p => p.Id == model.Id);
-            if(category is null) throw new KeyNotFoundException("Category not found");
 
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
@@ -83,10 +91,35 @@ namespace DOTProject.Application.Categories
         public async Task DeleteAsync(int id)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(p => p.Id == id);
-            if(category is null) throw new KeyNotFoundException("Category not found");
-            
+
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
+        }
+
+        private async Task<IEnumerable<CategoryModel>> GetDataAsync(bool isRefresh = false)
+        {
+            List<CategoryModel> categories = new List<CategoryModel>();
+            if (_cache.TryGetValue(CategoryCacheKey, out categories) && !isRefresh)
+            {
+                return categories;
+            }
+            categories = await _context.Categories.Include(p => p.Products)
+                    .Select(s => new CategoryModel
+                    {
+                        Id = s.Id,
+                        Name = s.Name,
+                        Products = s.Products.Select(p => new ProductModel
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Price = p.Price,
+                            CategoryId = p.CategoryId,
+                        }).ToList()
+                    })
+                    .ToListAsync();
+
+            _cache.Set(CategoryCacheKey, categories, TimeSpan.FromMinutes(5));
+            return categories;
         }
     }
 }

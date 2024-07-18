@@ -21,100 +21,72 @@ namespace DOTProject.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                var categories = await _categoryService.GetAllAsync();
-                return Ok(categories);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message, error_detail = ex.ToString() });
-            }
+            var categories = await _categoryService.GetAllAsync();
+            return Ok(categories);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            try
+            var category = await _categoryService.GetByIdAsync(id);
+            if (category == null)
             {
-                var category = await _categoryService.GetByIdAsync(id);
-                if (category == null)
-                {
-                    return NotFound();
-                }
-                return Ok(category);
+                return NotFound($"Category {id} not found");
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message, error_detail = ex.ToString() });
-            }
+            return Ok(category);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryModel category)
         {
-            try
+            ValidationResult result = await _categoryValidator.ValidateAsync(category);
+            if (!result.IsValid)
             {
-                ValidationResult result = await _categoryValidator.ValidateAsync(category);
-                if (!result.IsValid)
+                foreach (var failure in result.Errors)
                 {
-                    foreach (var failure in result.Errors)
-                    {
-                        ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
-                    }
-                    return BadRequest(ModelState);
+                    ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
                 }
+                return BadRequest(ModelState);
+            }
 
-                await _categoryService.AddAsync(category);
-                return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message, error_detail = ex.ToString() });
-            }
+            await _categoryService.AddAsync(category);
+            return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] CategoryModel category)
         {
-            try
-            {
-                if (id != category.Id)
-                {
-                    return BadRequest();
-                }
 
-                ValidationResult result = await _categoryValidator.ValidateAsync(category);
-                if (!result.IsValid)
-                {
-                    foreach (var failure in result.Errors)
-                    {
-                        ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
-                    }
-                    return BadRequest(ModelState);
-                }
-
-                await _categoryService.UpdateAsync(category);
-                return NoContent();
-            }
-            catch (Exception ex)
+            if (id != category.Id)
             {
-                return StatusCode(500, new { error = ex.Message, error_detail = ex.ToString() });
+                return BadRequest("Category ID mismatch");
             }
+
+            ValidationResult result = await _categoryValidator.ValidateAsync(category);
+            if (!result.IsValid)
+            {
+                foreach (var failure in result.Errors)
+                {
+                    ModelState.AddModelError(failure.PropertyName, failure.ErrorMessage);
+                }
+                return BadRequest(ModelState);
+            }
+
+            var isExists = await _categoryService.IsExistsAsync(id);
+            if (!isExists) return NotFound($"Category {id} not found");
+
+            await _categoryService.UpdateAsync(category);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _categoryService.DeleteAsync(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message, error_detail = ex.ToString() });
-            }
+            var isExists = await _categoryService.IsExistsAsync(id);
+            if (!isExists) return NotFound($"Category {id} not found");
+
+            await _categoryService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }
