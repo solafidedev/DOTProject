@@ -1,6 +1,6 @@
-# SampleRestApi Project
+# Project
 
-This is a sample .NET Core REST API project demonstrating the use of Onion Architecture, Entity Framework Core with Code-First and Migrations, CRUD operations, relationship management with eager and lazy loading, data validation, error handling, caching, and implementation of OOP/SOLID principles.
+Sample .NET Core REST API project
 
 ## Table of Contents
 - [Project Structure](#project-structure)
@@ -46,16 +46,20 @@ The project follows the Onion Architecture and is divided into several layers:
         dotnet run
     - open swagger to show endpoints list
         http://localhost:5258/swagger/index.html
-3. **EF Migration**
-    dotnet ef migrations add InitialCreate --project .\DOTProject.Infrastructure\DOTProject.Infrastructure.csproj --startup-project .\DOTProject.API\DOTProject.API.csproj
+3. **EF Migration or execute script backup database**
+    - open project
+    - execute migration
+        ```bash
+        dotnet ef migrations add InitialCreate --project .\DOTProject.Infrastructure\DOTProject.Infrastructure.csproj --startup-project .\DOTProject.API\DOTProject.API.csproj
 
-    dotnet ef database update --project .\DOTProject.Infrastructure\DOTProject.Infrastructure.csproj --startup-project .\DOTProject.API\DOTProject.API.csproj
+        dotnet ef database update --project .\DOTProject.Infrastructure\DOTProject.Infrastructure.csproj --startup-project .\DOTProject.API\DOTProject.API.csproj
 
     ## add seed
-    dotnet ef migrations add SeedData --project .\DOTProject.Infrastructure\DOTProject.Infrastructure.csproj --startup-project .\DOTProject.API\DOTProject.API.csproj
+        ```bash
+        dotnet ef migrations add SeedData --project .\DOTProject.Infrastructure\DOTProject.Infrastructure.csproj --startup-project .\DOTProject.API\DOTProject.API.csproj
 
-    dotnet ef database update --project .\DOTProject.Infrastructure\DOTProject.Infrastructure.csproj --startup-project .\DOTProject.API\DOTProject.API.csproj
-
+        dotnet ef database update --project .\DOTProject.Infrastructure\DOTProject.Infrastructure.csproj --startup-project .\DOTProject.API\DOTProject.API.csproj
+    - or execute script backup file attached (backupdb.sql)
 4. **API Endpoint**
     - Product Authenticate
         POST /api/Authenticate/login: Generate JWT Token
