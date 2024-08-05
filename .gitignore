@@ -8,3 +8,5 @@ DOTProject.Infrastructure/bin/*
 DOTProject.Infrastructure/obj/*
 DOTProject.UnitTests/bin/*
 DOTProject.UnitTests/obj/*
+DOTProject.API/publish/*
+.vs/*
